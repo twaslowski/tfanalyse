@@ -1,3 +1,6 @@
+![Build](https://github.com/twaslowski/tfanalyse/actions/workflows/test.yml/badge.svg)
+![Coverage](./test/coverage.svg)
+
 # tfanalyse
 
 tfanalyse is a lightweight command-line utility to summarise the contents of a Terraform plan.
