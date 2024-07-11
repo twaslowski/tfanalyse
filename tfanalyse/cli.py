@@ -5,7 +5,7 @@ import subprocess
 import click
 from click import secho
 
-from tfanalyse.change import Action, Change
+from tfanalyse.change import Change, ChangeAction
 
 """
 Main CLI entrypoint for tfanalyse.
@@ -39,7 +39,12 @@ def load(plan: str, print_plan: bool) -> None:
 @click.option(
     "--destroy-only", is_flag=True, default=False, help="Show only deletion changes."
 )
-def summarise(plan: str, show_no_op: bool, destroy_only: bool) -> None:
+@click.option(
+    "--update-only", is_flag=True, default=False, help="Show only update changes."
+)
+def summarise(
+    plan: str, show_no_op: bool, destroy_only: bool, update_only: bool
+) -> None:
     """
     Summarises Terraform plan changes.
     """
@@ -48,12 +53,18 @@ def summarise(plan: str, show_no_op: bool, destroy_only: bool) -> None:
     # For every change in the plan, print the action and address
     for change in changes:
         # Perform filtering based on flags
-        if not show_no_op and change.action == Action.NOOP:
+        if not show_no_op and change.change_action == ChangeAction.NOOP:
             continue
-        if destroy_only and change.action != Action.DELETE:
+        if destroy_only and change.change_action != ChangeAction.DELETE:
             continue
-        secho(change.action.name, fg=change.action.value, nl=False)
+        if update_only and change.change_action != ChangeAction.UPDATE:
+            continue
+        secho(change.change_action.name, fg=change.change_action.value, nl=False)
         secho(f" {change.address}")
+        # Print updated properties
+        if change.change_action == ChangeAction.UPDATE:
+            for key, (old, new) in change.diff_properties().items():
+                secho(f"  {key}: {old} -> {new}", fg="yellow")
 
 
 def _load(plan: str, print_plan: bool) -> dict:
