@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "tfanalyse"
+version = "0.0.1"
+description = ""
+authors = ["Tobias Waslowski <tobiaswaslowski@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+click = "^8.1.7"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+tfanalyse = "tfanalyse.cli:tfanalyse"
