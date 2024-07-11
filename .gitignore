@@ -44,6 +44,3 @@ Thumbs.db
 test/coverage.xml
 htmlcov
 package*
-
-*.tfplan
-*.json

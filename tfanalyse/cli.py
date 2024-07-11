@@ -7,6 +7,12 @@ from click import secho
 
 from tfanalyse.change import Action, Change
 
+"""
+Main CLI entrypoint for tfanalyse.
+Note that functions such as _load() and _summarise() exist primarily so they can be called from other places
+in the code without the click decorator being applied.
+"""
+
 
 @click.group()
 def tfanalyse():
@@ -39,7 +45,9 @@ def summarise(plan: str, show_no_op: bool, destroy_only: bool) -> None:
     """
     parsed_plan = _load(plan, False)
     changes = _parse_changes(parsed_plan)
+    # For every change in the plan, print the action and address
     for change in changes:
+        # Perform filtering based on flags
         if not show_no_op and change.action == Action.NOOP:
             continue
         if destroy_only and change.action != Action.DELETE:
@@ -59,9 +67,14 @@ def _load(plan: str, print_plan: bool) -> dict:
     if not _check_exists(plan):
         secho(f"Plan file {plan} does not exist.", fg="red")
         exit(1)
-    output = subprocess.run(
-        ["terraform", "show", "-json", plan], check=True, capture_output=True
-    )
+    try:
+        output = subprocess.run(
+            ["terraform", "show", "-json", plan], check=True, capture_output=True
+        )
+    except subprocess.CalledProcessError as e:
+        secho("Failed to load Terraform plan.", fg="red")
+        secho(f"\n{e.stderr.decode()}", fg="red")
+        exit(1)
     parsed_plan = json.loads(output.stdout)
     if print_plan:
         secho(json.dumps(parsed_plan, indent=2))
