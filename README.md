@@ -19,7 +19,7 @@ You can also install it from source:
 ```bash
 git clone git@github.com:twaslowski/tfanalyse.git
 pip install ./tfanalyse/   # global installation
-poetry install  # local installation
+poetry install  # installs in your given poetry virtual environment
 ```
 
 ## Usage
@@ -28,7 +28,7 @@ To use the tool, simply run it with the path to the Terraform plan file as an ar
 
 ```
 terraform plan -out=plan.tfplan
-tfanalyse summarise plan.tfplan
+tfanalyse plan.tfplan
 ```
 
 This will output a summary of the plan, showing the resources that are being created, updated, or destroyed.
