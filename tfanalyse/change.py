@@ -53,4 +53,9 @@ class ChangeAction(Enum):
 
     @classmethod
     def from_entry(cls, entry: dict) -> ChangeAction:
-        return ChangeAction[entry["change"]["actions"][0].upper().replace("-", "")]
+        return ChangeAction[
+            entry["change"]["actions"][0]
+            .upper()
+            .replace("-", "")
+            .replace("DELETE", "DESTROY")
+        ]

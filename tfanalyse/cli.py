@@ -14,25 +14,6 @@ in the code without the click decorator being applied.
 """
 
 
-@click.group()
-def tfanalyse():
-    """
-    Analyse Terraform plan files.
-    """
-
-
-@click.command()
-@click.argument("plan")
-@click.option(
-    "--print-plan", is_flag=True, default=False, help="Print the Terraform plan JSON."
-)
-def load(plan: str, print_plan: bool) -> None:
-    """
-    Loads Terraform plan JSON into a Python dictionary.
-    """
-    _load(plan, print_plan)
-
-
 @click.command()
 @click.argument("plan")
 @click.option("--show-no-op", is_flag=True, default=False, help="Show no-op changes.")
@@ -42,11 +23,11 @@ def load(plan: str, print_plan: bool) -> None:
 @click.option(
     "--update-only", is_flag=True, default=False, help="Show only update changes."
 )
-def summarise(
+def tfanalyse(
     plan: str, show_no_op: bool, destroy_only: bool, update_only: bool
 ) -> None:
     """
-    Summarises Terraform plan changes.
+    Summarise Terraform plan changes.
     """
     parsed_plan = _load(plan, False)
     changes = _parse_changes(parsed_plan)
@@ -108,7 +89,3 @@ def _parse_changes(parsed_plan: dict) -> list[Change]:
     :return: list of Change class instances.
     """
     return [Change.from_entry(entry) for entry in parsed_plan["resource_changes"]]
-
-
-tfanalyse.add_command(load)
-tfanalyse.add_command(summarise)
