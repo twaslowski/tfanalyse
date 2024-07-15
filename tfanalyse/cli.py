@@ -1,11 +1,11 @@
 import json
-import os
 import subprocess
 
 import click
 from click import secho
 
 from tfanalyse.change import Change, ChangeAction
+from tfanalyse.util import _check_exists
 
 """
 Main CLI entrypoint for tfanalyse.
@@ -50,12 +50,21 @@ def summarise(
     """
     parsed_plan = _load(plan, False)
     changes = _parse_changes(parsed_plan)
+    _summarise(changes, destroy_only, show_no_op, update_only)
+
+
+def _summarise(
+    changes: list[Change], destroy_only: bool, show_no_op: bool, update_only: bool
+):
+    """
+    Summarise Terraform plan changes.
+    """
     # For every change in the plan, print the action and address
     for change in changes:
         # Perform filtering based on flags
         if not show_no_op and change.change_action == ChangeAction.NOOP:
             continue
-        if destroy_only and change.change_action != ChangeAction.DELETE:
+        if destroy_only and change.change_action != ChangeAction.DESTROY:
             continue
         if update_only and change.change_action != ChangeAction.UPDATE:
             continue
@@ -99,10 +108,6 @@ def _parse_changes(parsed_plan: dict) -> list[Change]:
     :return: list of Change class instances.
     """
     return [Change.from_entry(entry) for entry in parsed_plan["resource_changes"]]
-
-
-def _check_exists(path: str) -> bool:
-    return os.path.exists(path)
 
 
 tfanalyse.add_command(load)

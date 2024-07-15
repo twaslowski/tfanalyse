@@ -48,7 +48,7 @@ class ChangeAction(Enum):
 
     CREATE = "green"
     UPDATE = "yellow"
-    DELETE = "red"
+    DESTROY = "red"
     NOOP = "white"
 
     @classmethod
