@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tfanalyse"
-version = "0.2.0"
+version = "0.3.0"
 description = "Lightweight command-line utility to analyse Terraform plan files"
 authors = ["Tobias Waslowski <tobiaswaslowski@gmail.com>"]
 readme = "README.md"

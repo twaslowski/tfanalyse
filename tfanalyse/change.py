@@ -50,6 +50,7 @@ class ChangeAction(Enum):
     UPDATE = "yellow"
     DESTROY = "red"
     NOOP = "white"
+    READ = "white"
 
     @classmethod
     def from_entry(cls, entry: dict) -> ChangeAction:
